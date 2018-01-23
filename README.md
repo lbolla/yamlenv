@@ -1,5 +1,7 @@
 # Yamlenv
 
+[![Build Status](https://travis-ci.org/lbolla/yamlenv.svg?branch=master)](https://travis-ci.org/lbolla/yamlenv)
+
 Interpolate YaML files with environmental variables.
 
 Given a YaML string like:
