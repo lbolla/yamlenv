@@ -7,7 +7,7 @@ setup(
     name='yamlenv',
     version='0.1',
     author="Lorenzo Bolla",
-    author_email="Lorenzo Bolla <lbolla@gmail.com>",
+    author_email="lbolla@gmail.com",
     description="Interpolate Yaml files with env vars",
     long_description=long_description,
     url="https://github.com/lbolla/yamlenv",
