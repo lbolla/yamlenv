@@ -1,0 +1,32 @@
+language: python
+
+python:
+  - 2.7
+  - &latest_py3 3.6
+
+cache: pip
+
+install:
+  - pip install tox
+
+script: tox
+
+jobs:
+  fast_finish: true
+  include:
+  - stage: deploy
+    if: tag IS present
+    python: *latest_py3
+    install: skip
+    script: skip
+    deploy:
+      provider: pypi
+      on:
+        tags: true
+        all_branches: true
+      user: lbolla
+      password:
+        secure: "eTuXqk80Odk/1CDQPNBEKiDBWPO9mSkhtppcXcFeobaIyRTFhxQSyT0pPL0dO++QY2PB7IVqXD+1EFIRZ5Lm9BAkQbIbO15E/XvOJK75Q3LD+/E3feGkg6bW1u+rNsfijFN8+qTIsCFqdf8V7nwaIrgnjsLSODonQYBFFqTsTM8Xt7Y7INOjkj+39AjhMZj52a2T342uK3qXb37iWj5GCO/gu7q7Y3Ss+mmo8anV66CSzk71Y/fCYnGNbeD9+DYI7BTEXhkIz2+iLV2KX875utWY4BBMV94ib8L9mCDfGej4QmuPa8gZ3BBaSvAdXmVlPuatwEGnoUCbzSNriRuTcOTBicmK+k2wYiKmcDvC5qMIjvxY9JQltqzMm7l9Ybor9faOIYkd9mD6u3AMM7vkjhJVUpl4uKMdn22uIDWayQftDZWrqQakyQnI5Bd97L66LakOGmWocA0aW1onNcjuzrG2pzFfVW8DB9lITLJfy0IBTSpYsh90sRlRzGCQpWC+6uoSIqPcT/D+9OHgUduSp7CQqpa/SjYx3CrQ2tMnQgyFUOBTvWA0R4UU9/dCCtfDSuOY6NK41JtTcGN4ecuXW/2HZpEVNZ0Vw8t8pRR9VWAFwbxdNUV+7mDL0Z8GdtVfshPj7ZH/PDj0upMiYi/kDg0OBpJp25atmM8rOe5veoc="
+      distributions: dists
+      skip_cleanup: true
+      skip_upload_docs: true
