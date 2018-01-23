@@ -1,14 +1,15 @@
 language: python
 
 python:
-  - 3.6
+  - "3.6"
 
 cache: pip
 
 install:
   - pip install tox
 
-script: tox
+script:
+  - tox
 
 jobs:
   fast_finish: true
