@@ -7,7 +7,7 @@ import re
 import yaml
 
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 # dual python 2/3 compatability, inspired by the "six" library
