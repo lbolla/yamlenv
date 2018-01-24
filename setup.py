@@ -5,7 +5,7 @@ with open('README.md') as readme:
 
 setup(
     name='yamlenv',
-    version='0.1.0',
+    version='0.2.0',
     author="Lorenzo Bolla",
     author_email="lbolla@gmail.com",
     description="Interpolate Yaml files with env vars",
