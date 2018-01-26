@@ -15,7 +15,7 @@ class TestYamlInclude(unittest.TestCase):
             ''')
 
     def test_empty_file(self):
-        f = tempfile.NamedTemporaryFile()
+        f = tempfile.NamedTemporaryFile(suffix='.yaml')
 
         data = yamlenv.load('''
 a: 1
@@ -25,13 +25,13 @@ b: !include {}
         self.assertEqual(data, {'a': 1, 'b': None})
 
     def test_include(self):
-        f = tempfile.NamedTemporaryFile()
+        f = tempfile.NamedTemporaryFile(suffix='.yaml')
         f.write(b'2')
         f.flush()
 
         data = yamlenv.load('''
 a: 1
 b: !include {}
-        '''.format('/tmp/junk.yaml'))
+        '''.format(f.name))
 
         self.assertEqual(data, {'a': 1, 'b': 2})
