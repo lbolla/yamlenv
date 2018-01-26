@@ -2,5 +2,6 @@ __pycache__
 *.pyc
 *.egg-info/
 .tox/
+.eggs/
 build/
 dist/

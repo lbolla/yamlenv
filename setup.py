@@ -14,5 +14,6 @@ setup(
     packages=find_packages('.'),
     install_requires=[
         'PyYAML>=3.12',
+        'six>=1.10',
     ],
 )
