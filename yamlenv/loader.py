@@ -45,4 +45,4 @@ class Loader(yaml.Loader):
             elif extension in ('json', ):
                 return json.load(f)
             else:
-                ''.join(f.readlines())
+                return f.read()
