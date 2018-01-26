@@ -8,7 +8,7 @@ files.
 
 Given a YaML string like:
 
-.. code-block:: python
+.. code-block:: yaml
 
     a: ${A}
     b: 2
