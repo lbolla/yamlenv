@@ -7,11 +7,19 @@ import yamlenv
 
 class TestYamlEnv(unittest.TestCase):
 
-    def test_no_interpolation(self):
+    def test_load(self):
         assert yamlenv.load('''
 a: 1
 b: 2
         ''') == {'a': 1, 'b': 2}
+
+    def test_load_all(self):
+        assert list(yamlenv.load_all('''
+a: 1
+b: 2
+---
+c: 3
+        ''')) == [{'a': 1, 'b': 2}, {'c': 3}]
 
     def test_fail_if_no_env(self):
         with self.assertRaises(ValueError):
