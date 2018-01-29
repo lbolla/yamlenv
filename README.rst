@@ -28,7 +28,7 @@ Default values are supported:
 .. code-block:: python
 
     yamlenv.load('''
-        a: ${A, 'hello'}
+        a: ${A:-hello}
         b: 2
     ''') == {
         'a': 'hello',

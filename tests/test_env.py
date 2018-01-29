@@ -8,18 +8,18 @@ import yamlenv
 class TestYamlEnv(unittest.TestCase):
 
     def test_load(self):
-        assert yamlenv.load('''
+        self.assertEqual(yamlenv.load('''
 a: 1
 b: 2
-        ''') == {'a': 1, 'b': 2}
+        '''), {'a': 1, 'b': 2})
 
     def test_load_all(self):
-        assert list(yamlenv.load_all('''
+        self.assertEqual(list(yamlenv.load_all('''
 a: 1
 b: 2
 ---
 c: 3
-        ''')) == [{'a': 1, 'b': 2}, {'c': 3}]
+        ''')), [{'a': 1, 'b': 2}, {'c': 3}])
 
     def test_fail_if_no_env(self):
         with self.assertRaises(ValueError):
@@ -30,28 +30,48 @@ b: 2
 
     def test_interpolate_integer(self):
         os.environ['A'] = '1'
-        assert yamlenv.load('''
+        self.assertEqual(yamlenv.load('''
 a: ${A}
 b: 2
-            ''') == {'a': '1', 'b': 2}
+            '''), {'a': '1', 'b': 2})
 
     def test_interpolate_string(self):
         os.environ['A'] = 'password'
-        assert yamlenv.load('''
+        self.assertEqual(yamlenv.load('''
 a: ${A}
 b: 2
-        ''') == {'a': 'password', 'b': 2}
+        '''), {'a': 'password', 'b': 2})
 
-    def test_interpolate_default(self):
-        assert yamlenv.load('''
+    def test_interpolate_string_alternative_separator(self):
+        os.environ['A'] = 'password'
+        self.assertEqual(yamlenv.load('''
+a: ${A:-1}
+b: 2
+        '''), {'a': 'password', 'b': 2})
+
+    def test_interpolate_string_prefer_env(self):
+        os.environ['A'] = 'password'
+        self.assertEqual(yamlenv.load('''
 a: ${A-1}
 b: 2
-            ''') == {'a': '1', 'b': 2}
+        '''), {'a': 'password', 'b': 2})
+
+    def test_interpolate_default(self):
+        self.assertEqual(yamlenv.load('''
+a: ${A-1}
+b: 2
+            '''), {'a': '1', 'b': 2})
+
+    def test_interpolate_default_alternative_separator(self):
+        self.assertEqual(yamlenv.load('''
+a: ${A:-1}
+b: 2
+            '''), {'a': '1', 'b': 2})
 
     def test_interpolate_nested(self):
-        assert yamlenv.load('''
+        self.assertEqual(yamlenv.load('''
 a: 1
 b:
   b1: 21
   b2: ${B-22}
-            ''') == {'a': 1, 'b': {'b1': 21, 'b2': '22'}}
+            '''), {'a': 1, 'b': {'b1': 21, 'b2': '22'}})

@@ -30,7 +30,8 @@ def objwalk(obj, path=(), memo=None):
 class EnvVar(object):
     __slots__ = ['name', 'default']
 
-    RE = re.compile(r'\$\{(?P<name>[^-]+)(?:-(?P<default>.+))?\}')
+    RE = re.compile(
+        r'\$\{(?P<name>[^:-]+)(?:(?P<separator>:?-)(?P<default>.+))?\}')
 
     def __init__(self, name, default):
         self.name = name
