@@ -42,7 +42,6 @@ class Loader(yaml.Loader):
         with open(filename, 'r') as f:
             if extension in ('yaml', 'yml'):
                 return yaml.load(f, Loader)
-            elif extension in ('json', ):
+            if extension == 'json':
                 return json.load(f)
-            else:
-                return f.read()
+            return f.read()
