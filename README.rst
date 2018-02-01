@@ -1,7 +1,7 @@
 Yamlenv
 =======
 
-|Build Status|
+|Build Status| |PyPi package|
 
 Interpolate YaML files with environmental variables and other YaML
 files.
@@ -54,3 +54,6 @@ More examples are available in the tests.
 
 .. |Build Status| image:: https://travis-ci.org/lbolla/yamlenv.svg?branch=master
    :target: https://travis-ci.org/lbolla/yamlenv
+
+.. |PyPi package| image:: https://badge.fury.io/py/yamlenv.svg
+    :target: https://badge.fury.io/py/yamlenv
