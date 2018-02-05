@@ -3,5 +3,6 @@ __pycache__
 *.egg-info/
 .tox/
 .eggs/
+.mypy_cache/
 build/
 dist/
