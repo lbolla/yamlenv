@@ -22,7 +22,7 @@ class LoaderMeta(type):
 class Loader(yaml.Loader):
     """YAML Loader with `!include` constructor."""
 
-    def __init__(self, stream):
+    def __init__(self, stream, filenames_seen=None):
         """Initialise Loader."""
 
         try:
@@ -30,7 +30,14 @@ class Loader(yaml.Loader):
         except AttributeError:
             self._root = os.path.curdir
 
+        self._filenames_seen = filenames_seen or set()
         yaml.Loader.__init__(self, stream)
+
+    def _remeber(self):
+        """Create a loader with the same filenames cache."""
+        def loader(stream):
+            return Loader(stream, self._filenames_seen)
+        return loader
 
     def construct_include(self, node):
         """Include file referenced at node."""
@@ -39,9 +46,13 @@ class Loader(yaml.Loader):
             os.path.join(self._root, self.construct_scalar(node)))
         extension = os.path.splitext(filename)[1].lstrip('.')
 
+        if filename in self._filenames_seen:
+            raise ValueError('Circular !include {}'.format(filename))
+        self._filenames_seen.add(filename)
+
         with open(filename, 'r') as f:
             if extension in ('yaml', 'yml'):
-                return yaml.load(f, Loader)
+                return yaml.load(f, self._remeber())
             if extension == 'json':
                 return json.load(f)
             return f.read()
