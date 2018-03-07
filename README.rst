@@ -35,6 +35,18 @@ Default values are supported:
         'b': 2
     }
 
+The environmental variable can be embedded in a larger string, too:
+
+.. code-block:: python
+
+    yamlenv.load('''
+        a: foo ${A:-bar} baz
+        b: 2
+    ''') == {
+        'a': 'foo bar baz',
+        'b': 2
+    }
+
 YaML files can include other YaML files, too. E.g. if ``b.yaml``
 contains "2", then:
 
