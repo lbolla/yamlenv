@@ -5,7 +5,7 @@ with open('README.rst') as readme:
 
 setup(
     name='yamlenv',
-    version='0.3.2',
+    version='0.4.0',
     author="Lorenzo Bolla",
     author_email="lbolla@gmail.com",
     description="Interpolate Yaml files with env vars",
