@@ -42,6 +42,13 @@ a: ${A}
 b: 2
         '''), {'a': 'password', 'b': 2})
 
+    def test_interpolate_within_characters(self):
+        os.environ['A'] = 'def'
+        self.assertEqual(yamlenv.load('''
+a: abc${A}ghi
+b: 2
+        '''), {'a': 'abcdefghi', 'b': 2})
+
     def test_interpolate_string_alternative_separator(self):
         os.environ['A'] = 'password'
         self.assertEqual(yamlenv.load('''

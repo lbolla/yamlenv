@@ -28,20 +28,21 @@ def objwalk(obj, path=(), memo=None):
 
 
 class EnvVar(object):
-    __slots__ = ['name', 'default']
+    __slots__ = ['name', 'default', 'string']
 
     RE = re.compile(
         r'\$\{(?P<name>[^:-]+)(?:(?P<separator>:?-)(?P<default>.+))?\}')
 
-    def __init__(self, name, default):
+    def __init__(self, name, default, string):
         self.name = name
         self.default = default
+        self.string = string
 
     @property
     def value(self):
         value = os.environ.get(self.name)
         if value:
-            return value
+            return self.RE.sub(value, self.string)
         if self.default:
             return self.default
         raise ValueError('Missing value and default for {}'.format(self.name))
@@ -50,11 +51,11 @@ class EnvVar(object):
     def from_string(cls, s):
         if not isinstance(s, six.string_types):
             return None
-        data = cls.RE.match(s)
+        data = cls.RE.search(s)
         if not data:
             return None
         data = data.groupdict()
-        return cls(data['name'], data['default'])
+        return cls(data['name'], data['default'], s)
 
 
 def interpolate(data):
