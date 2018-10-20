@@ -1,7 +1,12 @@
 # pylint: disable=undefined-variable
-from collections import Mapping, Set, Sequence
 import os
 import re
+
+try:
+    from collections.abc import Mapping, Sequence, Set
+except ImportError:
+    # Python 2.7
+    from collections import Mapping, Sequence, Set  # noqa
 
 import six
 
