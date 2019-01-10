@@ -82,3 +82,8 @@ b:
   b1: 21
   b2: ${B-22}
             '''), {'a': 1, 'b': {'b1': 21, 'b2': '22'}})
+
+    def test_interpolate_embedded(self):
+        self.assertEqual(yamlenv.load('''
+a: ${FOO:-foo} bar
+'''), {'a': 'foo bar'})

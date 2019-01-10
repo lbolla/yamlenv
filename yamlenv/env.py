@@ -49,7 +49,7 @@ class EnvVar(object):
         if value:
             return self.RE.sub(value, self.string)
         if self.default:
-            return self.default
+            return self.RE.sub(self.default, self.string)
         raise ValueError('Missing value and default for {}'.format(self.name))
 
     @classmethod
