@@ -23,6 +23,18 @@ and an environmental variable ``$A`` with value ``hello``,
         b: 2
     }
 
+Including YAML literals as environment variables is also
+supported - so if the environment variable ``$A`` was set to
+``false``, ``yamlenv.load`` would return:
+
+.. code-block:: python
+
+    {
+        a: False,
+        b: 2
+    }
+
+
 Default values are supported:
 
 .. code-block:: python

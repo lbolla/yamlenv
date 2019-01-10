@@ -1,6 +1,7 @@
 # pylint: disable=undefined-variable
 import os
 import re
+import yaml
 
 try:
     from collections.abc import Mapping, Sequence, Set
@@ -61,6 +62,10 @@ class EnvVar(object):
             return self.RE.sub(self.default, self.string)
         raise ValueError('Missing value and default for {}'.format(self.name))
 
+    @property
+    def yaml_value(self):
+        return yaml.safe_load(self.value)
+
     @classmethod
     def from_string(cls, s):
         if not isinstance(s, six.string_types):
@@ -79,5 +84,5 @@ def interpolate(data):
             x = data
             for k in path[:-1]:
                 x = x[k]
-            x[path[-1]] = e.value
+            x[path[-1]] = e.yaml_value
     return data
