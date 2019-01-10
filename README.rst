@@ -35,6 +35,9 @@ Default values are supported:
         'b': 2
     }
 
+As in Bash, defaulting can be done with either `:-` (to not allow empty
+defaults) or with `-` to allow empty values.
+
 The environmental variable can be embedded in a larger string, too:
 
 .. code-block:: python

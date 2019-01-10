@@ -50,7 +50,7 @@ class EnvVar(object):
 
     @property
     def allow_null_default(self):
-        return self.separator == ':'
+        return self.separator == ''
 
     @property
     def value(self):

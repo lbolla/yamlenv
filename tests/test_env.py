@@ -90,11 +90,11 @@ a: ${FOO:-foo} bar
 
     def test_default_empty(self):
         self.assertEqual(yamlenv.load('''
-a: ${FOO:-} bar
+a: ${FOO-} bar
 '''), {'a': ' bar'})
 
-    def test_default_exists(self):
+    def test_default_does_not_exist(self):
         with self.assertRaises(ValueError):
             yamlenv.load('''
-a: ${FOO-} bar
+a: ${FOO:-} bar
 ''')
