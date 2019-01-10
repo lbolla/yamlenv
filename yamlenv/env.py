@@ -1,6 +1,7 @@
 # pylint: disable=undefined-variable
 import os
 import re
+import yaml
 
 try:
     from collections.abc import Mapping, Sequence, Set
@@ -79,5 +80,5 @@ def interpolate(data):
             x = data
             for k in path[:-1]:
                 x = x[k]
-            x[path[-1]] = e.value
+            x[path[-1]] = yaml.load(e.value)
     return data

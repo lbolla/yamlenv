@@ -33,7 +33,7 @@ b: 2
         self.assertEqual(yamlenv.load('''
 a: ${A}
 b: 2
-            '''), {'a': '1', 'b': 2})
+            '''), {'a': 1, 'b': 2})
 
     def test_interpolate_string(self):
         os.environ['A'] = 'password'
@@ -67,13 +67,13 @@ b: 2
         self.assertEqual(yamlenv.load('''
 a: ${A-1}
 b: 2
-            '''), {'a': '1', 'b': 2})
+            '''), {'a': 1, 'b': 2})
 
     def test_interpolate_default_alternative_separator(self):
         self.assertEqual(yamlenv.load('''
 a: ${A:-1}
 b: 2
-            '''), {'a': '1', 'b': 2})
+            '''), {'a': 1, 'b': 2})
 
     def test_interpolate_nested(self):
         self.assertEqual(yamlenv.load('''
@@ -81,17 +81,28 @@ a: 1
 b:
   b1: 21
   b2: ${B-22}
-            '''), {'a': 1, 'b': {'b1': 21, 'b2': '22'}})
+            '''), {'a': 1, 'b': {'b1': 21, 'b2': 22}})
 
     def test_interpolate_embedded(self):
         self.assertEqual(yamlenv.load('''
 a: ${FOO:-foo} bar
 '''), {'a': 'foo bar'})
 
+    def test_interpolate_embedded_integer(self):
+        self.assertEqual(yamlenv.load('''
+a: ${FOO:-7} bar
+'''), {'a': '7 bar'})
+
+
+    def test_interpolate_default_empty(self):
+        self.assertEqual(yamlenv.load('''
+a: bar ${FOO-} bar
+'''), {'a': 'bar  bar'})
+
     def test_default_empty(self):
         self.assertEqual(yamlenv.load('''
-a: ${FOO-} bar
-'''), {'a': ' bar'})
+a: ${FOO-}
+'''), {'a': None})
 
     def test_default_does_not_exist(self):
         with self.assertRaises(ValueError):
