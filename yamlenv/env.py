@@ -33,22 +33,31 @@ def objwalk(obj, path=(), memo=None):
 
 
 class EnvVar(object):
-    __slots__ = ['name', 'default', 'string']
+    '''Follow Bash expansion rules.
+    https://www.gnu.org/software/bash/manual/html_node\
+/Shell-Parameter-Expansion.html
+    '''
+    __slots__ = ['name', 'separator', 'default', 'string']
 
     RE = re.compile(
-        r'\$\{(?P<name>[^:-]+)(?:(?P<separator>:?-)(?P<default>.+))?\}')
+        r'\$\{(?P<name>[^:-]+)((?P<separator>:?)-(?P<default>.*))?\}')
 
-    def __init__(self, name, default, string):
+    def __init__(self, name, separator, default, string):
         self.name = name
+        self.separator = separator
         self.default = default
         self.string = string
+
+    @property
+    def allow_null_default(self):
+        return self.separator == ':'
 
     @property
     def value(self):
         value = os.environ.get(self.name)
         if value:
             return self.RE.sub(value, self.string)
-        if self.default:
+        if self.allow_null_default or self.default:
             return self.RE.sub(self.default, self.string)
         raise ValueError('Missing value and default for {}'.format(self.name))
 
@@ -60,7 +69,7 @@ class EnvVar(object):
         if not data:
             return None
         data = data.groupdict()
-        return cls(data['name'], data['default'], s)
+        return cls(data['name'], data['separator'], data['default'], s)
 
 
 def interpolate(data):
