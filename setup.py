@@ -11,6 +11,7 @@ setup(
     description="Interpolate Yaml files with env vars",
     long_description=long_description,
     url="https://github.com/lbolla/yamlenv",
+    package_data={'yamlenv': ['py.typed']},
     packages=find_packages('.'),
     install_requires=[
         'PyYAML>=3.12',
