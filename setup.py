@@ -15,5 +15,12 @@ setup(
     install_requires=[
         'PyYAML>=3.12',
         'six>=1.10',
+        'typing; python_version<"3.6"',
+    ],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
     ],
 )

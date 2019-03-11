@@ -1,6 +1,6 @@
-# pylint: disable=redefined-builtin
 import os
 import json
+import typing as T
 
 import six
 import yaml
@@ -8,7 +8,7 @@ import yaml
 
 class LoaderMeta(type):
 
-    def __new__(mcs, __name__, __bases__, __dict__):
+    def __new__(mcs, __name__, __bases__, __dict__):  # type: ignore
         """Add include constructer to class."""
 
         # register the include constructor on the class
@@ -23,6 +23,7 @@ class Loader(yaml.Loader):
     """YAML Loader with `!include` constructor."""
 
     def __init__(self, stream, filenames_seen=None):
+        # type: (T.IO[str], T.Optional[T.Set[str]]) -> None
         """Initialise Loader."""
 
         try:
@@ -34,16 +35,20 @@ class Loader(yaml.Loader):
         yaml.Loader.__init__(self, stream)
 
     def _remeber(self):
+        # type: () -> T.Callable[[T.IO[str]], Loader]
         """Create a loader with the same filenames cache."""
         def loader(stream):
+            # type: (T.IO[str]) -> Loader
             return Loader(stream, self._filenames_seen)
         return loader
 
     def construct_include(self, node):
+        # type: (T.Any) -> T.Any
         """Include file referenced at node."""
 
         filename = os.path.abspath(
-            os.path.join(self._root, self.construct_scalar(node)))
+            os.path.join(
+                self._root, self.construct_scalar(node)))  # type: ignore
         extension = os.path.splitext(filename)[1].lstrip('.')
 
         if filename in self._filenames_seen:

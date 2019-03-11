@@ -1,4 +1,3 @@
-# pylint: disable=undefined-variable
 import os
 import re
 import yaml
@@ -10,12 +9,18 @@ except ImportError:
     from collections import Mapping, Sequence, Set  # noqa
 
 import six
+import typing as T
+
+from yamlenv.types import Cache, Obj, ObjIFunc, Path, WalkType
 
 
-def objwalk(obj, path=(), memo=None):
+def objwalk(obj, path=None, memo=None):
+    # type: (Obj, T.Optional[Path], T.Optional[Cache]) -> WalkType
+    if path is None:
+        path = tuple()
     if memo is None:
         memo = set()
-    iterator = None
+    iterator = None  # type: T.Optional[ObjIFunc]
     if isinstance(obj, Mapping):
         iterator = six.iteritems
     elif isinstance(
@@ -44,6 +49,7 @@ class EnvVar(object):
         r'\$\{(?P<name>[^:-]+)((?P<separator>:?)-(?P<default>.*))?\}')
 
     def __init__(self, name, separator, default, string):
+        # type: (str, str, str, str) -> None
         self.name = name
         self.separator = separator
         self.default = default
@@ -51,10 +57,12 @@ class EnvVar(object):
 
     @property
     def allow_null_default(self):
+        # type: () -> bool
         return self.separator == ''
 
     @property
     def value(self):
+        # type: () -> str
         value = os.environ.get(self.name)
         if value:
             return self.RE.sub(value, self.string)
@@ -64,20 +72,23 @@ class EnvVar(object):
 
     @property
     def yaml_value(self):
+        # type: () -> T.Any
         return yaml.safe_load(self.value)
 
     @classmethod
     def from_string(cls, s):
+        # type: (str) -> T.Optional[EnvVar]
         if not isinstance(s, six.string_types):
             return None
         data = cls.RE.search(s)
         if not data:
             return None
-        data = data.groupdict()
-        return cls(data['name'], data['separator'], data['default'], s)
+        gd = data.groupdict()
+        return cls(gd['name'], gd['separator'], gd['default'], s)
 
 
 def interpolate(data):
+    # type: (T.Any) -> Obj
     for path, obj in objwalk(data):
         e = EnvVar.from_string(obj)
         if e is not None:
