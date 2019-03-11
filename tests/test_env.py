@@ -41,6 +41,23 @@ a: ${A}
 b: 2
         '''), {'a': 'password', 'b': 2})
 
+    def test_interpolate_two_values(self):
+        os.environ['A'] = '1'
+        os.environ['B'] = 'foo'
+        self.assertEqual(yamlenv.load('''
+a: ${A} ${B}
+            '''), {'a': "1 foo"})
+
+    def test_interpolate_two_values_with_defaults(self):
+        self.assertEqual(yamlenv.load('''
+a: ${C:-foo} ${D:-bar}
+            '''), {'a': "foo bar"})
+
+    def test_interpolate_invalid_yaml_value(self):
+        self.assertEqual(yamlenv.load('''
+{'a': {'b': '{foo} ${C:-foo}'}}
+            '''), {'a': {'b': "{foo} foo"}})
+
     def test_interpolate_within_characters(self):
         os.environ['A'] = 'def'
         self.assertEqual(yamlenv.load('''

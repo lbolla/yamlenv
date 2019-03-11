@@ -1,6 +1,7 @@
 import os
 import re
 import yaml
+import yaml.parser
 
 try:
     from collections.abc import Mapping, Sequence, Set
@@ -46,7 +47,7 @@ class EnvVar(object):
     __slots__ = ['name', 'separator', 'default', 'string']
 
     RE = re.compile(
-        r'\$\{(?P<name>[^:-]+)((?P<separator>:?)-(?P<default>.*))?\}')
+        r'\$\{(?P<name>[^:-]+?)((?P<separator>:?)-(?P<default>.*?))?\}')
 
     def __init__(self, name, separator, default, string):
         # type: (str, str, str, str) -> None
@@ -65,15 +66,19 @@ class EnvVar(object):
         # type: () -> str
         value = os.environ.get(self.name)
         if value:
-            return self.RE.sub(value, self.string)
+            return self.RE.sub(value, self.string, count=1)
         if self.allow_null_default or self.default:
-            return self.RE.sub(self.default, self.string)
+            return self.RE.sub(self.default, self.string, count=1)
         raise ValueError('Missing value and default for {}'.format(self.name))
 
     @property
-    def yaml_value(self):
+    def maybe_yaml_value(self):
         # type: () -> T.Any
-        return yaml.safe_load(self.value)
+        v = self.value
+        try:
+            return yaml.safe_load(v)
+        except yaml.parser.ParserError:
+            return v
 
     @classmethod
     def from_string(cls, s):
@@ -89,11 +94,16 @@ class EnvVar(object):
 
 def interpolate(data):
     # type: (T.Any) -> Obj
-    for path, obj in objwalk(data):
-        e = EnvVar.from_string(obj)
-        if e is not None:
-            x = data
-            for k in path[:-1]:
-                x = x[k]
-            x[path[-1]] = e.yaml_value
+    while True:
+        more = False
+        for path, obj in objwalk(data):
+            e = EnvVar.from_string(obj)
+            if e is not None:
+                more = True
+                x = data
+                for k in path[:-1]:
+                    x = x[k]
+                x[path[-1]] = e.maybe_yaml_value
+        if not more:
+            break
     return data

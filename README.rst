@@ -62,6 +62,18 @@ The environmental variable can be embedded in a larger string, too:
         'b': 2
     }
 
+More than one environmental variable can appear in a string:
+
+.. code-block:: python
+
+    yamlenv.load('''
+        a: foo ${A:-bar} ${B:-baz}
+        b: 2
+    ''') == {
+        'a': 'foo bar baz',
+        'b': 2
+    }
+
 YaML files can include other YaML files, too. E.g. if ``b.yaml``
 contains "2", then:
 
