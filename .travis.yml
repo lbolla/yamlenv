@@ -5,11 +5,8 @@ python:
 
 cache: pip
 
-install:
-  - pip install tox
-
 script:
-  - tox
+  - make test
 
 deploy:
   provider: pypi
